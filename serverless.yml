@@ -48,7 +48,7 @@ functions:
           path: events
           method: post
   getEvents:
-    handler: api/event.list
+    handler: api/event.getAll
     memorySize: 128
     description: List all events
     events:

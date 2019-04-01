@@ -9,6 +9,36 @@ AWS.config.setPromisesDependency(require('bluebird'));
 
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
+/**
+ * 
+ * @api {POST} /events Add an event
+ * @apiName AddEvent
+ * @apiGroup Event
+ * @apiVersion  0.1.0
+ * 
+ * 
+ * @apiParam {string} fullname Name of the event
+ * @apiParam {string} description Description of the event
+ * @apiParam {string} organiser Event organiser
+ * @apiParam {int} date Event date
+ * 
+ * @apiParamExample  {type} Request-Example:
+ * {
+ * 		"name" : "Roy",
+ * 		"eat_at": 886545087,
+ * 		"age": 9
+ * }
+ * 
+ * @apiSuccess (200) {string} message message to display
+ * @apiSuccess (200) {string} id id of the event
+ * 
+ * @apiSuccessExample {type} Success-Response:
+ * {
+ *		"message": "Sucessfully created new event Call-conf",
+ * 		"id": "3d00c1b0-53d5-11e9-93c8-e341f2328a3c"
+ * }
+ */
+
 module.exports.submit = (event, context, callback) => {
   const requestBody = JSON.parse(event.body);
   const fullname = requestBody.fullname;
@@ -67,7 +97,32 @@ const eventInfo = (fullname, description, organiser, date) => {
     };
 };
 
-module.exports.list = (event, context, callback) => {
+/**
+ * 
+ * @api {GET} /events Get all events
+ * @apiName GetEvents
+ * @apiGroup Event
+ * @apiVersion  0.1.0
+ * 
+ * @apiParam {int} id ID of the event
+ * 
+ * @apiSuccess (200) {array} event object
+ * 
+ * @apiSuccessExample {type} Success-Response:
+ * {
+ *      "events": [
+ *          {
+ *              "description": "First test yeah !",
+ *              "id": "5257bda0-548b-11e9-998f-5322673bd7b1",
+ *              "organiser": "Hugo",
+ *              "event_date": 1554129229798,
+ *              "fullname": "Test"
+ *          }
+ *      ]
+ * }
+ */
+
+module.exports.getAll = (event, context, callback) => {
     var params = {
         TableName: process.env.EVENTS_TABLE,
         ProjectionExpression: "id, fullname, description, organiser, event_date"
@@ -91,6 +146,29 @@ module.exports.list = (event, context, callback) => {
     });
 };
 
+/**
+ * 
+ * @api {GET} /event/{id} Get event by ID
+ * @apiName GetEventById
+ * @apiGroup Event
+ * @apiVersion  0.1.0
+ * 
+ * 
+ * @apiSuccess (200) {description} event description
+ * @apiSuccess (200) {id} event id
+ * @apiSuccess (200) {organiser} event organiser
+ * @apiSuccess (200) {event_date} event date
+ * @apiSuccess (200) {fullname} event name
+ * 
+ * @apiSuccessExample {type} Success-Response:
+ * {
+ *      "description": "First test yeah !",
+ *      "id": "5257bda0-548b-11e9-998f-5322673bd7b1",
+ *      "organiser": "Hugo",
+ *      "event_date": 1554129229798,
+ *      "fullname": "Test"
+ * }
+ */
 module.exports.getById = (event, context, callback) => {
     const params = {
         TableName: process.env.EVENTS_TABLE,

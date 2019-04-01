@@ -1,0 +1,63 @@
+service: family-events
+
+provider:
+  name: aws
+  runtime: nodejs8.10
+  region: eu-west-1
+  stage: dev
+  environment:
+    EVENTS_TABLE: ${self:service}-${opt:stage, self:provider.stage}
+    EVENTS_EMAIL_TABLE: "events-email-${opt:stage, self:provider.stage}"
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+      Resource: "*"
+
+resources:
+  Resources:
+    EventsDynamoDbTable:
+      Type: 'AWS::DynamoDB::Table'
+      DeletionPolicy: Retain
+      Properties:
+        AttributeDefinitions:
+          -
+            AttributeName: "id"
+            AttributeType: "S"   
+        KeySchema:
+          -
+            AttributeName: "id"
+            KeyType: "HASH"
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        StreamSpecification:
+          StreamViewType: "NEW_AND_OLD_IMAGES"
+        TableName: ${self:provider.environment.EVENTS_TABLE}
+
+functions:
+  eventSubmission:
+    handler: api/event.submit
+    memorySize: 128
+    description: Submit event information.
+    events:
+      - http: 
+          path: events
+          method: post
+  getEvents:
+    handler: api/event.list
+    memorySize: 128
+    description: List all events
+    events:
+      - http: 
+          path: events
+          method: get
+  getEventDetails:
+    handler: api/event.getById
+    events:
+      - http:
+          path: event/{id}
+          method: get

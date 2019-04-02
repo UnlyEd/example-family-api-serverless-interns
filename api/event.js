@@ -104,8 +104,6 @@ const eventInfo = (fullname, description, organiser, date) => {
  * @apiGroup Event
  * @apiVersion  0.1.0
  * 
- * @apiParam {int} id ID of the event
- * 
  * @apiSuccess (200) {array} event object
  * 
  * @apiSuccessExample {type} Success-Response:
@@ -152,6 +150,9 @@ module.exports.getAll = (event, context, callback) => {
  * @apiName GetEventById
  * @apiGroup Event
  * @apiVersion  0.1.0
+ * 
+ * @apiParam {int} id ID of the event
+
  * 
  * 
  * @apiSuccess (200) {description} event description

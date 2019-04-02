@@ -196,7 +196,7 @@ module.exports.getById = (event, context, callback) => {
 /**
  * 
  * @api {DELETE} /event/{id} Delete event by ID
- * @apiName GetEventById
+ * @apiName DeleteEventById
  * @apiGroup Event
  * @apiVersion  0.1.0
  * 

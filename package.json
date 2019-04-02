@@ -1,0 +1,27 @@
+{
+  "name": "family-api",
+  "version": "1.0.0",
+  "description": "API",
+  "dependencies": {
+    "aws-sdk": "2.433.0",
+    "bluebird": "3.5.3",
+    "body-parser": "1.18.3",
+    "express": "4.16.4",
+    "serverless-http": "1.9.1",
+    "uuid": "3.3.2"
+  },
+  "devDependencies": {
+    "jest": "24.6.0"
+  },
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/studylink_team/family-api.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "homepage": "https://bitbucket.org/studylink_team/family-api#readme"
+}

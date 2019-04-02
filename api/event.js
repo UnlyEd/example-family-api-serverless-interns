@@ -10,14 +10,13 @@ AWS.config.setPromisesDependency(require('bluebird'));
 const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 /**
- * 
  * @api {POST} /events Add an event
  * @apiName AddEvent
  * @apiGroup Event
  * @apiVersion  0.1.0
  * 
  * 
- * @apiParam {string} fullname Name of the event
+ * @apiParam {string} name Name of the event
  * @apiParam {string} description Description of the event
  * @apiParam {string} organiser Event organiser
  * @apiParam {int} date Event date
@@ -41,7 +40,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
 
 module.exports.submit = (event, context, callback) => {
   const requestBody = JSON.parse(event.body);
-  const fullname = requestBody.fullname;
+  const fullname = requestBody.name;
   const description = requestBody.description;
   const organiser = requestBody.organiser;
   const date = requestBody.date;
@@ -77,7 +76,7 @@ module.exports.submit = (event, context, callback) => {
 const submitEventP = event => {
     console.log('Submitting event');
     const eventInfo = {
-        Tablefullname: process.env.EVENTS_TABLE,
+        TableName: process.env.EVENTS_TABLE,
         Item: event,
     };
     return dynamoDb.put(eventInfo).promise()
@@ -191,4 +190,47 @@ module.exports.getById = (event, context, callback) => {
             callback(new Error('Couldn\'t fetch candidate.'));
             return;
     });
+};
+
+
+/**
+ * 
+ * @api {DELETE} /event/{id} Delete event by ID
+ * @apiName GetEventById
+ * @apiGroup Event
+ * @apiVersion  0.1.0
+ * 
+ * @apiParam {int} id ID of the event
+ * 
+ * 
+ * @apiSuccess (200) {message} message to display
+ * @apiSuccess (200) {id} event id deleted
+ * 
+ * @apiSuccessExample {type} Success-Response:
+ * {
+ *      "message": "Deleted item with id 5257bda0-548b-11e9-998f-5322673bd7b1",
+ *      "id": "5257bda0-548b-11e9-998f-5322673bd7b1"
+ * }
+ */
+module.exports.deleteById = (event, context, callback) => {
+    const params = {
+        TableName: process.env.EVENTS_TABLE,
+        Key: {
+            id: event.pathParameters.id,
+        },
+    };
+    dynamoDb.delete(params, (err, result) => {
+		if (err) {
+			callback(new Error('Couldn\'t fetch candidate.'));
+		} else {
+			const response = {
+                statusCode: 200,
+                body: JSON.stringify({
+                    "message": `Deleted item with id ${event.pathParameters.id}`,
+                    "id": event.pathParameters.id
+                })
+            };
+			callback(null, response);
+		}
+	});
 };

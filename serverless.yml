@@ -15,6 +15,7 @@ provider:
         - dynamodb:Scan
         - dynamodb:GetItem
         - dynamodb:PutItem
+        - dynamodb:DeleteItem
       Resource: "*"
 
 resources:
@@ -61,3 +62,9 @@ functions:
       - http:
           path: event/{id}
           method: get
+  deleteEvent:
+    handler: api/event.deleteById
+    events:
+      - http:
+          path: event/{id}
+          method: delete

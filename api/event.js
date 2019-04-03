@@ -1,9 +1,14 @@
 'use strict';
 
-'use strict';
-
+const epsagon = require('epsagon');
 const uuid = require('uuid');
-const AWS = require('aws-sdk'); 
+const AWS = require('aws-sdk');
+
+epsagon.init({
+    token: 'a95057ad-1dc2-4ae2-a04d-b7c4632e669f',
+    appName: 'Epsagon Application',
+    metadataOnly: false,
+});
 
 AWS.config.setPromisesDependency(require('bluebird'));
 
@@ -38,7 +43,7 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
  * }
  */
 
-module.exports.submit = (event, context, callback) => {
+module.exports.submit = epsagon.lambdaWrapper((event, context, callback) => {
   const requestBody = JSON.parse(event.body);
   const fullname = requestBody.name;
   const description = requestBody.description;
@@ -70,7 +75,7 @@ module.exports.submit = (event, context, callback) => {
         })
       })
     });
-};
+});
 
 
 const submitEventP = event => {
@@ -119,7 +124,7 @@ const eventInfo = (fullname, description, organiser, date) => {
  * }
  */
 
-module.exports.getAll = (event, context, callback) => {
+module.exports.getAll = epsagon.lambdaWrapper((event, context, callback) => {
     var params = {
         TableName: process.env.EVENTS_TABLE,
         ProjectionExpression: "id, fullname, description, organiser, event_date"
@@ -141,7 +146,7 @@ module.exports.getAll = (event, context, callback) => {
             });
         }
     });
-};
+});
 
 /**
  * 
@@ -169,7 +174,7 @@ module.exports.getAll = (event, context, callback) => {
  *      "fullname": "Test"
  * }
  */
-module.exports.getById = (event, context, callback) => {
+module.exports.getById = epsagon.lambdaWrapper((event, context, callback) => {
     const params = {
         TableName: process.env.EVENTS_TABLE,
         Key: {
@@ -190,7 +195,7 @@ module.exports.getById = (event, context, callback) => {
             callback(new Error('Couldn\'t fetch candidate.'));
             return;
     });
-};
+});
 
 
 /**
@@ -212,7 +217,7 @@ module.exports.getById = (event, context, callback) => {
  *      "id": "5257bda0-548b-11e9-998f-5322673bd7b1"
  * }
  */
-module.exports.deleteById = (event, context, callback) => {
+module.exports.deleteById = epsagon.lambdaWrapper((event, context, callback) => {
     const params = {
         TableName: process.env.EVENTS_TABLE,
         Key: {
@@ -233,4 +238,4 @@ module.exports.deleteById = (event, context, callback) => {
 			callback(null, response);
 		}
 	});
-};
+});

@@ -28,9 +28,10 @@ const dynamoDb = new AWS.DynamoDB.DocumentClient();
  * 
  * @apiParamExample  {type} Request-Example:
  * {
- * 		"name" : "Roy",
- * 		"eat_at": 886545087,
- * 		"age": 9
+ * 		"name" : "Test",
+ * 		"description": "One more test, again",
+ * 		"organiser": "Hugo",
+ *      "date": 1774429229784
  * }
  * 
  * @apiSuccess (200) {string} message message to display

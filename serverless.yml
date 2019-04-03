@@ -48,6 +48,7 @@ functions:
       - http: 
           path: events
           method: post
+          cors: true
   getEvents:
     handler: api/event.getAll
     memorySize: 128
@@ -56,15 +57,18 @@ functions:
       - http: 
           path: events
           method: get
+          cors: true
   getEventDetails:
     handler: api/event.getById
     events:
       - http:
           path: event/{id}
           method: get
+          cors: true
   deleteEvent:
     handler: api/event.deleteById
     events:
       - http:
           path: event/{id}
           method: delete
+          cors: true
